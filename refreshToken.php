@@ -7,26 +7,36 @@ session_start(); // Start PHP session
 
 function refreshToken() {
 
-    $config = include('config.php');
-
+    $config = include('config.php'); // Retrieve config details
     $accessToken = $_SESSION['sessionAccessToken']; // Retrieve the accessToken value from the session
-
-    // Configure DataService object
-    $dataService = DataService::Configure(array(
+    $dataService = DataService::Configure(array( // Create DataService instance
         'auth_mode' => 'oauth2',
         'ClientID' => $config['client_id'],
         'ClientSecret' =>  $config['client_secret'],
         'RedirectURI' => $config['oauth_redirect_uri'],
-        'baseUrl' => "development",
-        'refreshTokenKey' => $accessToken->getRefreshToken(),
-        'QBORealmID' => "The Company ID which the app wants to access",
+        'scope' => $config['oauth_scope'],
+        'baseUrl' => "development"
     ));
 
     $OAuth2LoginHelper = $dataService->getOAuth2LoginHelper(); // Get the OAuth2LoginHelper instance
     $refreshedAccessTokenObj = $OAuth2LoginHelper->refreshToken();
+    $error = $OAuth2LoginHelper->getLastError(); // Check for OAuth2 errors
+    if ($error != null) {
+        throw new Exception(
+        "The Status code is: " . $error->getHttpStatusCode() . "\n" .
+        "The Helper message is: " . $error->getOAuthHelperError() . "\n" .
+        "The Response message is: " . $error->getResponseBody() . "\n");
+    }
 
-    $dataService->updateOAuth2Token($refreshedAccessTokenObj); // Update the OAuth2Token of the refreshed token
-    $_SESSION['sessionAccessToken'] = $refreshedAccessTokenObj; // Set the access token in the session
+    $_SESSION['sessionAccessToken'] = $accessToken; // Set the access token in the session
+    $dataService->updateOAuth2Token($accessToken); // Update the OAuth2Token of the DataService object
+    $error = $dataService->getLastError(); // Check for API call errors
+    if ($error != null) {
+        throw new Exception(
+        "The Status code is: " . $error->getHttpStatusCode() . "\n" .
+        "The Helper message is: " . $error->getOAuthHelperError() . "\n" .
+        "The Response message is: " . $error->getResponseBody() . "\n");
+    }
 
     print_r($refreshedAccessTokenObj);
     return $refreshedAccessTokenObj;
