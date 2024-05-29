@@ -3,7 +3,7 @@
 require_once(__DIR__ . '/vendor/autoload.php');
 use QuickBooksOnline\API\DataService\DataService;
 
-session_start(); // Start PHP session
+session_start();
 
 function refreshToken() {
 
@@ -35,7 +35,7 @@ function refreshToken() {
             "The Response message is: " . $error->getResponseBody() . "\n");
         }
 
-        $_SESSION['sessionAccessToken'] = $accessToken; // Set the access token in the session
+        $_SESSION['sessionAccessToken'] = $refreshedAccessTokenObj; // Set the access token in the session
         $dataService->updateOAuth2Token($refreshedAccessTokenObj); // Update the OAuth2Token of the DataService object
         $error = $dataService->getLastError(); // Check for API call errors
         if ($error != null) {
