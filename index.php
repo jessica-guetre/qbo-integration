@@ -1,5 +1,7 @@
 <?php
 
+require_once 'errorReporting.php';
+
 require_once(__DIR__ . '/vendor/autoload.php');
 use QuickBooksOnline\API\DataService\DataService;
 
@@ -28,7 +30,7 @@ try {
     $_SESSION['authUrl'] = $authUrl; // Set the authorization URL in the session
 
     // Set the access token in the session if it exists
-    if (isset($_SESSION) || isset($_SESSION['sessionAccessToken'])) {
+    if (isset($_SESSION) && isset($_SESSION['sessionAccessToken'])) {
         $accessToken = $_SESSION['sessionAccessToken'];
 
         $accessTokenJson = array('token_type' => 'bearer',
@@ -102,7 +104,7 @@ try {
                 }).done(function( msg ) {
                     $('#getVendor').html( msg );
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    $('#getVendor').html("An error occurred: " + textStatus + " - " + errorThrown);
+                    $('#getVendor').html(textStatus + " - " + errorThrown + " - Check log for more information");
                 });
             }
 
@@ -122,7 +124,7 @@ try {
                     $('#updateVendor').html(msg);
                     $('#vendorForm')[0].reset();
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    $('#updateVendor').html("An error occurred: " + textStatus + " - " + errorThrown);
+                    $('#updateVendor').html(textStatus + " - " + errorThrown + " - Check log for more information");
                 });
             }
 
@@ -134,7 +136,7 @@ try {
                 }).done(function(msg) {
                     console.log("Token refreshed successfully", msg);
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    console.error("An error occurred: " + textStatus + " - " + errorThrown);
+                    console.error(textStatus + " - " + errorThrown);
                 });
             }
         }
