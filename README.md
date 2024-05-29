@@ -36,7 +36,7 @@ return array(
 ?>
 ```
 
-### Running the Application
+### Usage
 
 Start the application on localhost from your commandline.
 ```
@@ -44,8 +44,6 @@ php -S localhost:8000
 ```
 
 Navigate to http://localhost:8000/ in your browser. Press 'Connect' and log in using your QuickBooks Online account information. Select the company you'd like to use.
-
-### Using the Application
 
 Once logged in, vendor information can be accessed or updated. 
 
@@ -62,9 +60,12 @@ The given name, primary phone number, primary email address and account number f
 Fill in the Id for the vendor you'd like to change.
 ![](https://github.com/jessica-guetre/qbo-integration/blob/main/images/updateVendorEmpty.png)
 
-
 At least one of the other fields, given name, primary phone number, primary email address or account number are required.
 ![](https://github.com/jessica-guetre/qbo-integration/blob/main/images/updateVendorFilled.png)
 
 Press 'Update Info' once the correct information is filled in.
 ![](https://github.com/jessica-guetre/qbo-integration/blob/main/images/updateVendorComplete.png)
+
+### Aknowledgements
+
+This applications extends the [Intuit PHP demo app](https://github.com/IntuitDeveloper/HelloWorld-PHP). This includes the retrieval and update of vendor information, as well as greater coverage for error handling and logging.
