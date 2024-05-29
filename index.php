@@ -12,35 +12,40 @@ if ($config['client_id'] == '' || $config['client_secret'] == '') {
     die("Error: client_id and client_secret must be changed in the config.php file.\n");
 }
 
-// Configure DataService object
-$dataService = DataService::Configure(array(
-    'auth_mode' => 'oauth2',
-    'ClientID' => $config['client_id'],
-    'ClientSecret' =>  $config['client_secret'],
-    'RedirectURI' => $config['oauth_redirect_uri'],
-    'scope' => $config['oauth_scope'],
-    'baseUrl' => "development"
-));
+try {
+    // Configure DataService object
+    $dataService = DataService::Configure(array(
+        'auth_mode' => 'oauth2',
+        'ClientID' => $config['client_id'],
+        'ClientSecret' =>  $config['client_secret'],
+        'RedirectURI' => $config['oauth_redirect_uri'],
+        'scope' => $config['oauth_scope'],
+        'baseUrl' => "development"
+    ));
 
-$OAuth2LoginHelper = $dataService->getOAuth2LoginHelper(); // Get the OAuth2LoginHelper instance
-$authUrl = $OAuth2LoginHelper->getAuthorizationCodeURL(); // Get authorization URL
-$_SESSION['authUrl'] = $authUrl; // Set the authorization URL in the session
-
-// Set the access token in the session if it exists
-if (isset($_SESSION['sessionAccessToken'])) {
-    $accessToken = $_SESSION['sessionAccessToken'];
-
-    $accessTokenJson = array('token_type' => 'bearer',
-        'access_token' => $accessToken->getAccessToken(),
-        'refresh_token' => $accessToken->getRefreshToken(),
-        'x_refresh_token_expires_in' => $accessToken->getRefreshTokenExpiresAt(),
-        'expires_in' => $accessToken->getAccessTokenExpiresAt()
-    );
-
-    $dataService->updateOAuth2Token($accessToken); // Update the OAuth2Token of the DataService object
     $OAuth2LoginHelper = $dataService->getOAuth2LoginHelper(); // Get the OAuth2LoginHelper instance
-}
+    $authUrl = $OAuth2LoginHelper->getAuthorizationCodeURL(); // Get authorization URL
+    $_SESSION['authUrl'] = $authUrl; // Set the authorization URL in the session
 
+    // Set the access token in the session if it exists
+    if (isset($_SESSION) || isset($_SESSION['sessionAccessToken'])) {
+        $accessToken = $_SESSION['sessionAccessToken'];
+
+        $accessTokenJson = array('token_type' => 'bearer',
+            'access_token' => $accessToken->getAccessToken(),
+            'refresh_token' => $accessToken->getRefreshToken(),
+            'x_refresh_token_expires_in' => $accessToken->getRefreshTokenExpiresAt(),
+            'expires_in' => $accessToken->getAccessTokenExpiresAt()
+        );
+
+        $dataService->updateOAuth2Token($accessToken); // Update the OAuth2Token of the DataService object
+        $OAuth2LoginHelper = $dataService->getOAuth2LoginHelper(); // Get the OAuth2LoginHelper instance
+    }
+
+} catch (Exception $e) {
+    error_log($e->getMessage());
+    die("An error occurred while setting up the DataService. Please check the logs for more details.\n");
+}
 ?>
 
 <!DOCTYPE html>
@@ -96,6 +101,8 @@ if (isset($_SESSION['sessionAccessToken'])) {
                     url: "getVendor.php",
                 }).done(function( msg ) {
                     $('#getVendor').html( msg );
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    $('#getVendor').html("An error occurred: " + textStatus + " - " + errorThrown);
                 });
             }
 
@@ -114,6 +121,8 @@ if (isset($_SESSION['sessionAccessToken'])) {
                 }).done(function(msg) {
                     $('#updateVendor').html(msg);
                     $('#vendorForm')[0].reset();
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    $('#updateVendor').html("An error occurred: " + textStatus + " - " + errorThrown);
                 });
             }
 
@@ -122,8 +131,10 @@ if (isset($_SESSION['sessionAccessToken'])) {
                 $.ajax({
                     type: "POST",
                     url: "refreshToken.php",
-                }).done(function( msg ) {
-
+                }).done(function(msg) {
+                    console.log("Token refreshed successfully", msg);
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("An error occurred: " + textStatus + " - " + errorThrown);
                 });
             }
         }
