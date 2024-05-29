@@ -8,8 +8,8 @@ session_start();
 $config = include('config.php');
 
 // Check that client_id and client_secret are set
-if (empty($config['client_id']) || empty($config['client_secret'])) {
-    die("Error: client_id and client_secret must be passed through the command line.\n");
+if ($config['client_id'] == '' || $config['client_secret'] == '') {
+    die("Error: client_id and client_secret must be changed in the config.php file.\n");
 }
 
 // Configure DataService object
