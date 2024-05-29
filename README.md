@@ -50,7 +50,21 @@ Navigate to http://localhost:8000/ in your browser. Press 'Connect' and log in u
 Once logged in, vendor information can be accessed or updated. 
 
 **Get Vendor Info** 
-Press 'Get Info' to get the Id for each vendor within the company, as well as the vendor's given name, primary phone number, primary email address and account number if they exist.
+
+Press 'Get Info' to get the Id for each vendor within the company
+![](https://github.com/jessica-guetre/qbo-integration/blob/main/images/getVendorEmpty.png)
+
+The given name, primary phone number, primary email address and account number for each vendor will be displayed if they exist.
+![](https://github.com/jessica-guetre/qbo-integration/blob/main/images/getVendor.png)
 
 **Update Vendor Info**
-Fill in the Id for the vendor you'd like to change. At least one of the other fields, given name, primary phone number, primary email address or account number are required. Press 'Update Info' once the correct information is filled in.
+
+Fill in the Id for the vendor you'd like to change.
+![](https://github.com/jessica-guetre/qbo-integration/blob/main/images/updateVendorEmpty.png)
+
+
+At least one of the other fields, given name, primary phone number, primary email address or account number are required.
+![](https://github.com/jessica-guetre/qbo-integration/blob/main/images/updateVendorFilled.png)
+
+Press 'Update Info' once the correct information is filled in.
+![](https://github.com/jessica-guetre/qbo-integration/blob/main/images/updateVendorComplete.png)
